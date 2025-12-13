@@ -1,5 +1,15 @@
-mlenv/
+# Python
 __pycache__/
+*.pyc
+
+# Virtual environment
+mlenv/
+
+# Data & models
+*.7z
+*.zip
 *.pkl
-*.ipynb_checkpoints
-.env
+data/
+
+# Jupyter
+.ipynb_checkpoints/
