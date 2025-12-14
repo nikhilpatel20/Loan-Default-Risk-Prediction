@@ -1,14 +1,37 @@
-
-# Python cache
-*.pyo
-
-
-# ML artifacts (only allow required)
-!lgbm_final.pkl
-
 # Git
 .git
 .gitignore
 
-# Env
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual env
+venv/
+env/
+.mlenv/
+
+# Jupyter & Experiments
+.ipynb_checkpoints/
+*.ipynb
+
+# Data (never inside image)
+data/
+*.csv
+*.xlsx
+*.zip
+*.7z
+
+# Logs & temp
+*.log
+tmp/
+.cache/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# Env files
 .env

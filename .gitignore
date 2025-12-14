@@ -1,15 +1,47 @@
 # Python
+
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Virtual environment
-mlenv/
+# Virtual Environment
+venv/
+env/
+.mlenv/
+.venv/
 
-# Data & models
-*.7z
-*.zip
-*.pkl
-data/
 
-# Jupyter
+# Jupyter / Experiments
 .ipynb_checkpoints/
+*.ipynb
+
+# Data & ML Artifacts
+data/
+*.csv
+*.xlsx
+*.parquet
+*.joblib
+*.pkl
+
+# BUT allow final production model explicitly
+!lgbm_final.pkl
+
+# Logs & Temp
+
+*.log
+tmp/
+.cache/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets
+.env
+.env.*
+
+# Git
+.git/
