@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
-from app.inference import predict_risk
 import os
+from app.inference import predict_risk
 
 app = Flask(__name__)
 
@@ -13,7 +13,6 @@ def health():
 # ---------------- INDEX (optional UI) ----------------
 @app.route("/", methods=["GET"])
 def index():
-    # UI optional hai; agar file nahi hai to clean message do
     if os.path.exists("index.html"):
         return send_from_directory(".", "index.html")
     return jsonify({"message": "UI not available. Use /predict endpoint."})
@@ -29,9 +28,6 @@ def predict():
 
     if not isinstance(data, dict):
         return jsonify({"error": "JSON object expected"}), 400
-
-    # debug log
-    app.logger.info(f"Incoming payload: {data}")
 
     try:
         result = predict_risk(data)

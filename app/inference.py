@@ -1,8 +1,13 @@
 import joblib
 import pandas as pd
 from pathlib import Path
+import logging   # ✅ ADDED
 
-# Load model
+# ---------------- LOGGER (ADDED) ----------------
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# ---------------- Load model ----------------
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "lgbm_final.pkl"
 
@@ -10,8 +15,9 @@ if not MODEL_PATH.exists():
     raise FileNotFoundError(f"Model not found at {MODEL_PATH}")
 
 model = joblib.load(MODEL_PATH)
+logger.info("Model loaded successfully")   # ✅ ADDED
 
-# Expected schema (TRAINING DATA CONTRACT)
+# ---------------- Expected schema (TRAINING DATA CONTRACT) ----------------
 EXPECTED_COLUMNS = [
     "Income",
     "Age",
@@ -41,8 +47,7 @@ CATEGORICAL_COLS = [
     "STATE",
 ]
 
-# Input normalization (THIS WAS MISSING IN YOUR CODE)
-
+# ---------------- Input normalization ----------------
 def normalize_input(data: dict) -> dict:
     normalized = {}
 
@@ -77,26 +82,32 @@ def normalize_input(data: dict) -> dict:
 
     return normalized
 
-# Prediction function
-
+# ---------------- Prediction function ----------------
 def predict_risk(data: dict) -> dict:
-    # 1️⃣ Normalize & validate input
-    clean_data = normalize_input(data)
+    try:
+        # 1️⃣ Normalize & validate input
+        clean_data = normalize_input(data)
 
-    # 2️⃣ Convert to DataFrame (correct column order)
-    df = pd.DataFrame([clean_data], columns=EXPECTED_COLUMNS)
+        # 2️⃣ Convert to DataFrame (correct column order)
+        df = pd.DataFrame([clean_data], columns=EXPECTED_COLUMNS)
 
-    # 3️⃣ Model prediction
-    pred = int(model.predict(df)[0])
+        logger.info(f"Inference input DF:\n{df}")  # ✅ ADDED
 
-    proba = model.predict_proba(df)[0][1]
-    if pd.isna(proba):
-        raise ValueError("Model returned NaN probability (input invalid)")
+        # 3️⃣ Model prediction
+        pred = int(model.predict(df)[0])
 
-    proba = float(proba)
+        proba = model.predict_proba(df)[0][1]
+        if pd.isna(proba):
+            raise ValueError("Model returned NaN probability (input invalid)")
 
-    return {
-        "prediction": pred,
-        "default_probability": round(proba, 4),
-        "status": "High Default Risk" if pred == 1 else "Low Default Risk",
-    }
+        proba = float(proba)
+
+        return {
+            "prediction": pred,
+            "default_probability": round(proba, 4),
+            "status": "High Default Risk" if pred == 1 else "Low Default Risk",
+        }
+
+    except Exception as e:
+        logger.exception("Prediction failed")  # ✅ ADDED
+        raise

@@ -36,5 +36,6 @@ RUN rm -rf /root/.cache /tmp/*
 
 EXPOSE 5000
 
-CMD ["gunicorn", "app.app:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:5000"]
+CMD ["gunicorn", "app.app:app", "--bind", "0.0.0.0:5000"]
+
 

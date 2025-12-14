@@ -4,6 +4,5 @@ pandas
 numpy
 joblib
 lightgbm
-fastapi
-uvicorn
 gunicorn
+scikit-learn
