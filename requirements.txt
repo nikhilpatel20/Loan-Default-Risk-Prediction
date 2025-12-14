@@ -1,13 +1,6 @@
-pandas
-numpy
-scikit-learn
-matplotlib
-seaborn
-streamlit
-joblib
-fastapi
-uvicorn[standard]
-pydantic
 flask
 gunicorn
+pandas
+numpy
+joblib
 lightgbm

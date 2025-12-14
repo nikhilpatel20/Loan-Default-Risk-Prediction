@@ -1,19 +1,39 @@
+# ---------- BUILD STAGE ----------
+FROM python:3.10-slim AS builder
 
-# 1) Use lightweight Python base image
-FROM python:3.11-slim
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# 2) Set working directory
+WORKDIR /install
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+
+# ---------- RUNTIME STAGE ----------
+FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# 3) Copy requirements and install packages
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# copy python packages
+COPY --from=builder /install /usr/local
 
-# 4) Copy all project files (models + code + HTML)
-COPY . .
+# copy only required app files
+COPY app/ app/
 
-# 5) Expose port (FastAPI default)
-EXPOSE 8000
+# remove caches (CRITICAL)
+RUN rm -rf /root/.cache /tmp/*
 
-# 6) Run flaskAPI 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
+EXPOSE 5000
+
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
