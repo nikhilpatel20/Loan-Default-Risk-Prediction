@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "http://localhost:8000/predict"  # change after deploy
+API_URL = "http://localhost:5000/predict"
 
 st.set_page_config(page_title="Loan Default Risk Predictor")
 
@@ -33,7 +33,7 @@ if st.button("Predict"):
         "STATE": state,
         "CURRENT_JOB_YRS": job_yrs,
         "CURRENT_HOUSE_YRS": house_yrs,
-    } 
+    }
 
     res = requests.post(API_URL, json=payload)
 
@@ -43,5 +43,3 @@ if st.button("Predict"):
         st.write("Probability:", round(out["default_probability"], 3))
     else:
         st.error(res.text)
-
-

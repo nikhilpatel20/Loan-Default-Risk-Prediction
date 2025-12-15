@@ -10,11 +10,11 @@ def health():
     return jsonify({"status": "Loan Default Risk API running"})
 
 
-# ---------------- INDEX (optional UI) ----------------
+# ---------------- INDEX ----------------
 @app.route("/", methods=["GET"])
 def index():
-    if os.path.exists("index.html"):
-        return send_from_directory(".", "index.html")
+    if os.path.exists("templates/index.html"):
+        return send_from_directory(".", "templates/index.html")
     return jsonify({"message": "UI not available. Use /predict endpoint."})
 
 
@@ -37,3 +37,7 @@ def predict():
             "error": "Prediction failed",
             "details": str(e)
         }), 400
+
+# ---------------- LOCAL RUN ----------------
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
