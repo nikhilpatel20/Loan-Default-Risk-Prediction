@@ -1,7 +1,9 @@
 import streamlit as st
 import requests
+import os
 
-API_URL = "http://localhost:5000/predict"
+API_URL = os.getenv("API_URL","http://localhost:5000/predict")
+
 
 st.set_page_config(page_title="Loan Default Risk Predictor")
 
