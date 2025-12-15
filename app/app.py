@@ -1,18 +1,17 @@
 from flask import Flask, request, jsonify, render_template
 from app.inference import predict_risk
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__)   # <-- THIS IS CORRECT NOW
 
 # ---------------- INDEX (HTML UI) ----------------
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
 
-# ---------------- HEALTH ----------------
+# ---------------- HEALTH CHECK ----------------
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "Loan Default Risk API running"})
-
 
 # ---------------- PREDICT ----------------
 @app.route("/predict", methods=["POST"])
@@ -33,7 +32,6 @@ def predict():
             "error": "Prediction failed",
             "details": str(e)
         }), 500
-
 
 # ---------------- LOCAL RUN ----------------
 if __name__ == "__main__":
