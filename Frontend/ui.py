@@ -2,11 +2,14 @@ import streamlit as st
 import requests
 import os
 
-API_URL = os.getenv("API_URL","http://localhost:5000/predict")
+# Render se API URL aana chahiye
+API_URL = os.getenv("API_URL")
 
+if API_URL is None:
+    st.error("API_URL environment variable not set")
+    st.stop()
 
 st.set_page_config(page_title="Loan Default Risk Predictor")
-
 st.title("🏦 Loan Default Risk Prediction")
 
 income = st.number_input("Income", min_value=0)
@@ -17,8 +20,8 @@ marital = st.selectbox("Marital Status", ["single", "married"])
 house = st.selectbox("House Ownership", ["rented", "owned"])
 car = st.selectbox("Car Ownership", ["no", "yes"])
 
-profession = st.text_input("Profession", "Software_Developer")
-state = st.text_input("State", "Madhya_Pradesh")
+profession = st.text_input("Profession")
+state = st.text_input("State")
 
 job_yrs = st.number_input("Current Job Years", min_value=0)
 house_yrs = st.number_input("Current House Years", min_value=0)
@@ -37,11 +40,11 @@ if st.button("Predict"):
         "CURRENT_HOUSE_YRS": house_yrs,
     }
 
-    res = requests.post(API_URL, json=payload)
-
-    if res.status_code == 200:
+    try:
+        res = requests.post(API_URL, json=payload)
+        res.raise_for_status()
         out = res.json()
         st.success(out["status"])
         st.write("Probability:", round(out["default_probability"], 3))
-    else:
-        st.error(res.text)
+    except Exception as e:
+        st.error(f"API call failed: {e}")
